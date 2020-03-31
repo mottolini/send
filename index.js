@@ -795,7 +795,11 @@ SendStream.prototype.stream = function stream (path, options) {
   // pipe
   var stream = fs.createReadStream(path, options)
   this.emit('stream', stream)
-  stream.pipe(res)
+  if (options.pipe && path.indexOf('/assets/') == -1) { //TODO M8 remove assets check
+    stream.pipe(options.pipe).pipe(res)
+  } else {
+    stream.pipe(res)
+  }
 
   // response finished, done with the fd
   onFinished(res, function onfinished () {
